@@ -10,6 +10,12 @@ export const ROLE_ALLOWED_PATHS: Record<Exclude<Role, "coordinator">, string[]> 
   consultant: ["/travel", "/consultants"],
 };
 
+// Paths denied even if their prefix is allowed.
+export const ROLE_DENIED_PATHS: Partial<Record<Role, string[]>> = {
+  sales_manager: ["/seminars/new"],
+};
+
+
 // Landing route per role after login / when access is denied.
 export const ROLE_HOME: Record<Role, string> = {
   coordinator: "/dashboard",
@@ -26,7 +32,10 @@ export function pickPrimaryRole(roles: string[] | undefined): Role {
 }
 
 export function canAccessPath(role: Role, pathname: string): boolean {
+  const denied = ROLE_DENIED_PATHS[role] ?? [];
+  if (denied.some((p) => pathname === p || pathname.startsWith(p + "/"))) return false;
   if (role === "coordinator") return true;
   const allowed = ROLE_ALLOWED_PATHS[role] ?? [];
   return allowed.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
+

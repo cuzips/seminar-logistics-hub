@@ -5,13 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { STATUS_LABEL, STATUS_COLOR, formatDate } from "@/lib/seminar-utils";
 import { Plus } from "lucide-react";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole, canAccessPath } from "@/lib/rbac";
 
 export const Route = createFileRoute("/_authenticated/seminars/")({
   component: SeminarsList,
 });
 
+
 function SeminarsList() {
+  const { user } = useCurrentUser();
+  const { data: userRoles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(userRoles);
+  const canCreate = canAccessPath(role, "/seminars/new");
+
   const { data: seminars = [], isLoading } = useQuery({
+
     queryKey: ["seminars-list"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -30,9 +39,12 @@ function SeminarsList() {
           <h1 className="font-display text-3xl font-bold">Seminar</h1>
           <p className="text-muted-foreground">Danh sách booking từ phòng Bookings.</p>
         </div>
-        <Button asChild>
-          <Link to="/seminars/new"><Plus className="mr-2 h-4 w-4" /> Booking mới</Link>
-        </Button>
+        {canCreate && (
+          <Button asChild>
+            <Link to="/seminars/new"><Plus className="mr-2 h-4 w-4" /> Booking mới</Link>
+          </Button>
+        )}
+
       </div>
 
       <Card>
