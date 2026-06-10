@@ -12,6 +12,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { STATUS_LABEL, STATUS_COLOR, CONTRACT_STATUS_LABEL, formatDate, formatCurrency, computeMaterials, daysUntil } from "@/lib/seminar-utils";
 import { toast } from "sonner";
 import { ArrowLeft, CheckCircle2, Send, Package, Plane } from "lucide-react";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole } from "@/lib/rbac";
 
 export const Route = createFileRoute("/_authenticated/seminars/$id")({
   component: SeminarDetail,
