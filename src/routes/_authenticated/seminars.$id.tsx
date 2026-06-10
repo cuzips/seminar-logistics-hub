@@ -71,19 +71,19 @@ function SeminarDetail() {
         )}
       </div>
 
-      <Tabs defaultValue="site">
+      <Tabs defaultValue={salesOnly ? "contract" : "site"}>
         <TabsList>
-          <TabsTrigger value="site">Địa điểm</TabsTrigger>
+          {!salesOnly && <TabsTrigger value="site">Địa điểm</TabsTrigger>}
           <TabsTrigger value="contract">Hợp đồng</TabsTrigger>
-          <TabsTrigger value="travel">Travel</TabsTrigger>
-          <TabsTrigger value="materials">Materials</TabsTrigger>
-          <TabsTrigger value="activity">Hoạt động</TabsTrigger>
+          {!salesOnly && <TabsTrigger value="travel">Travel</TabsTrigger>}
+          {!salesOnly && <TabsTrigger value="materials">Materials</TabsTrigger>}
+          {!salesOnly && <TabsTrigger value="activity">Hoạt động</TabsTrigger>}
         </TabsList>
-        <TabsContent value="site"><SiteTab seminar={seminar} onChange={refresh} /></TabsContent>
-        <TabsContent value="contract"><ContractTab seminar={seminar} onChange={refresh} /></TabsContent>
-        <TabsContent value="travel"><TravelTab seminar={seminar} onChange={refresh} /></TabsContent>
-        <TabsContent value="materials"><MaterialsTab seminar={seminar} onChange={refresh} /></TabsContent>
-        <TabsContent value="activity"><ActivityTab seminarId={id} /></TabsContent>
+        {!salesOnly && <TabsContent value="site"><SiteTab seminar={seminar} onChange={refresh} /></TabsContent>}
+        <TabsContent value="contract"><ContractTab seminar={seminar} onChange={refresh} role={role} /></TabsContent>
+        {!salesOnly && <TabsContent value="travel"><TravelTab seminar={seminar} onChange={refresh} /></TabsContent>}
+        {!salesOnly && <TabsContent value="materials"><MaterialsTab seminar={seminar} onChange={refresh} /></TabsContent>}
+        {!salesOnly && <TabsContent value="activity"><ActivityTab seminarId={id} /></TabsContent>}
       </Tabs>
     </div>
   );
