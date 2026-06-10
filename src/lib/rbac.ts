@@ -32,7 +32,10 @@ export function pickPrimaryRole(roles: string[] | undefined): Role {
 }
 
 export function canAccessPath(role: Role, pathname: string): boolean {
+  const denied = ROLE_DENIED_PATHS[role] ?? [];
+  if (denied.some((p) => pathname === p || pathname.startsWith(p + "/"))) return false;
   if (role === "coordinator") return true;
   const allowed = ROLE_ALLOWED_PATHS[role] ?? [];
   return allowed.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
+
