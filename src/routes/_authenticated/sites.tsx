@@ -51,7 +51,16 @@ function SitesPage() {
             <DialogHeader><DialogTitle>Thêm địa điểm</DialogTitle></DialogHeader>
             <div className="space-y-3">
               <div><Label>Tên</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-              <div><Label>Thành phố</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
+              <div>
+                <Label>Thành phố</Label>
+                <Select value={form.city} onValueChange={(v) => setForm({ ...form, city: v })}>
+                  <SelectTrigger><SelectValue placeholder="Chọn thành phố" /></SelectTrigger>
+                  <SelectContent>
+                    {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div><Label>Địa chỉ</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
               <div><Label>Sales Manager</Label><Input value={form.sales_manager_name} onChange={(e) => setForm({ ...form, sales_manager_name: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-2">
