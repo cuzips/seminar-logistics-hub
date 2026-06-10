@@ -28,13 +28,13 @@ function ConsultantsPage() {
     queryFn: async () => (await supabase.from("consultants").select("*").order("name")).data ?? [],
   });
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", home_airport: "", airline_pref: "Delta", seat: "Aisle" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", hobby: "", airline_pref: "Delta", seat: "Aisle" });
 
   const add = async () => {
 
     const { error } = await supabase.from("consultants").insert({
-      name: form.name, email: form.email, phone: form.phone, home_airport: form.home_airport,
-      travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard" },
+      name: form.name, email: form.email, phone: form.phone, home_airport: "JFK",
+      travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard", hobby: form.hobby },
     });
     if (error) return toast.error(error.message);
     toast.success("Đã thêm giảng viên");
