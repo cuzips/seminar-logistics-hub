@@ -14,7 +14,13 @@ export const Route = createFileRoute("/_authenticated/seminars/")({
 
 
 function SeminarsList() {
+  const { user } = useCurrentUser();
+  const { data: userRoles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(userRoles);
+  const canCreate = canAccessPath(role, "/seminars/new");
+
   const { data: seminars = [], isLoading } = useQuery({
+
     queryKey: ["seminars-list"],
     queryFn: async () => {
       const { data, error } = await supabase
