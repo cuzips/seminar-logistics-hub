@@ -1,9 +1,12 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
 import { ROLE_LABEL } from "@/lib/seminar-utils";
+import { pickPrimaryRole, canAccessPath, ROLE_HOME } from "@/lib/rbac";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -17,7 +20,19 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthedLayout() {
   const { user } = useCurrentUser();
-  const { data: roles } = useUserRoles(user?.id);
+  const { data: roles, isLoading: rolesLoading } = useUserRoles(user?.id);
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const role = pickPrimaryRole(roles);
+
+  useEffect(() => {
+    if (rolesLoading || !roles) return;
+    if (!canAccessPath(role, pathname)) {
+      toast.error("Bạn không có quyền truy cập trang này");
+      navigate({ to: ROLE_HOME[role], replace: true });
+    }
+  }, [role, pathname, rolesLoading, roles, navigate]);
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
