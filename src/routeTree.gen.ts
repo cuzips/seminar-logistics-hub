@@ -9,38 +9,214 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTravelRouteImport } from './routes/_authenticated/travel'
+import { Route as AuthenticatedSitesRouteImport } from './routes/_authenticated/sites'
+import { Route as AuthenticatedSeminarTypesRouteImport } from './routes/_authenticated/seminar-types'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedMaterialsRouteImport } from './routes/_authenticated/materials'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedContractsRouteImport } from './routes/_authenticated/contracts'
+import { Route as AuthenticatedConsultantsRouteImport } from './routes/_authenticated/consultants'
+import { Route as AuthenticatedSeminarsIndexRouteImport } from './routes/_authenticated/seminars.index'
+import { Route as AuthenticatedSeminarsNewRouteImport } from './routes/_authenticated/seminars.new'
+import { Route as AuthenticatedSeminarsIdRouteImport } from './routes/_authenticated/seminars.$id'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTravelRoute = AuthenticatedTravelRouteImport.update({
+  id: '/travel',
+  path: '/travel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSitesRoute = AuthenticatedSitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSeminarTypesRoute =
+  AuthenticatedSeminarTypesRouteImport.update({
+    id: '/seminar-types',
+    path: '/seminar-types',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMaterialsRoute = AuthenticatedMaterialsRouteImport.update({
+  id: '/materials',
+  path: '/materials',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedContractsRoute = AuthenticatedContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedConsultantsRoute =
+  AuthenticatedConsultantsRouteImport.update({
+    id: '/consultants',
+    path: '/consultants',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSeminarsIndexRoute =
+  AuthenticatedSeminarsIndexRouteImport.update({
+    id: '/seminars/',
+    path: '/seminars/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSeminarsNewRoute =
+  AuthenticatedSeminarsNewRouteImport.update({
+    id: '/seminars/new',
+    path: '/seminars/new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSeminarsIdRoute = AuthenticatedSeminarsIdRouteImport.update({
+  id: '/seminars/$id',
+  path: '/seminars/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/consultants': typeof AuthenticatedConsultantsRoute
+  '/contracts': typeof AuthenticatedContractsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/materials': typeof AuthenticatedMaterialsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/seminar-types': typeof AuthenticatedSeminarTypesRoute
+  '/sites': typeof AuthenticatedSitesRoute
+  '/travel': typeof AuthenticatedTravelRoute
+  '/seminars/$id': typeof AuthenticatedSeminarsIdRoute
+  '/seminars/new': typeof AuthenticatedSeminarsNewRoute
+  '/seminars/': typeof AuthenticatedSeminarsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/consultants': typeof AuthenticatedConsultantsRoute
+  '/contracts': typeof AuthenticatedContractsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/materials': typeof AuthenticatedMaterialsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/seminar-types': typeof AuthenticatedSeminarTypesRoute
+  '/sites': typeof AuthenticatedSitesRoute
+  '/travel': typeof AuthenticatedTravelRoute
+  '/seminars/$id': typeof AuthenticatedSeminarsIdRoute
+  '/seminars/new': typeof AuthenticatedSeminarsNewRoute
+  '/seminars': typeof AuthenticatedSeminarsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/consultants': typeof AuthenticatedConsultantsRoute
+  '/_authenticated/contracts': typeof AuthenticatedContractsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/materials': typeof AuthenticatedMaterialsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/seminar-types': typeof AuthenticatedSeminarTypesRoute
+  '/_authenticated/sites': typeof AuthenticatedSitesRoute
+  '/_authenticated/travel': typeof AuthenticatedTravelRoute
+  '/_authenticated/seminars/$id': typeof AuthenticatedSeminarsIdRoute
+  '/_authenticated/seminars/new': typeof AuthenticatedSeminarsNewRoute
+  '/_authenticated/seminars/': typeof AuthenticatedSeminarsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/consultants'
+    | '/contracts'
+    | '/dashboard'
+    | '/materials'
+    | '/notifications'
+    | '/seminar-types'
+    | '/sites'
+    | '/travel'
+    | '/seminars/$id'
+    | '/seminars/new'
+    | '/seminars/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/consultants'
+    | '/contracts'
+    | '/dashboard'
+    | '/materials'
+    | '/notifications'
+    | '/seminar-types'
+    | '/sites'
+    | '/travel'
+    | '/seminars/$id'
+    | '/seminars/new'
+    | '/seminars'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/consultants'
+    | '/_authenticated/contracts'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/materials'
+    | '/_authenticated/notifications'
+    | '/_authenticated/seminar-types'
+    | '/_authenticated/sites'
+    | '/_authenticated/travel'
+    | '/_authenticated/seminars/$id'
+    | '/_authenticated/seminars/new'
+    | '/_authenticated/seminars/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,12 +224,132 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/travel': {
+      id: '/_authenticated/travel'
+      path: '/travel'
+      fullPath: '/travel'
+      preLoaderRoute: typeof AuthenticatedTravelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sites': {
+      id: '/_authenticated/sites'
+      path: '/sites'
+      fullPath: '/sites'
+      preLoaderRoute: typeof AuthenticatedSitesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/seminar-types': {
+      id: '/_authenticated/seminar-types'
+      path: '/seminar-types'
+      fullPath: '/seminar-types'
+      preLoaderRoute: typeof AuthenticatedSeminarTypesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/materials': {
+      id: '/_authenticated/materials'
+      path: '/materials'
+      fullPath: '/materials'
+      preLoaderRoute: typeof AuthenticatedMaterialsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/contracts': {
+      id: '/_authenticated/contracts'
+      path: '/contracts'
+      fullPath: '/contracts'
+      preLoaderRoute: typeof AuthenticatedContractsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/consultants': {
+      id: '/_authenticated/consultants'
+      path: '/consultants'
+      fullPath: '/consultants'
+      preLoaderRoute: typeof AuthenticatedConsultantsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/seminars/': {
+      id: '/_authenticated/seminars/'
+      path: '/seminars'
+      fullPath: '/seminars/'
+      preLoaderRoute: typeof AuthenticatedSeminarsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/seminars/new': {
+      id: '/_authenticated/seminars/new'
+      path: '/seminars/new'
+      fullPath: '/seminars/new'
+      preLoaderRoute: typeof AuthenticatedSeminarsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/seminars/$id': {
+      id: '/_authenticated/seminars/$id'
+      path: '/seminars/$id'
+      fullPath: '/seminars/$id'
+      preLoaderRoute: typeof AuthenticatedSeminarsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedConsultantsRoute: typeof AuthenticatedConsultantsRoute
+  AuthenticatedContractsRoute: typeof AuthenticatedContractsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMaterialsRoute: typeof AuthenticatedMaterialsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedSeminarTypesRoute: typeof AuthenticatedSeminarTypesRoute
+  AuthenticatedSitesRoute: typeof AuthenticatedSitesRoute
+  AuthenticatedTravelRoute: typeof AuthenticatedTravelRoute
+  AuthenticatedSeminarsIdRoute: typeof AuthenticatedSeminarsIdRoute
+  AuthenticatedSeminarsNewRoute: typeof AuthenticatedSeminarsNewRoute
+  AuthenticatedSeminarsIndexRoute: typeof AuthenticatedSeminarsIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedConsultantsRoute: AuthenticatedConsultantsRoute,
+  AuthenticatedContractsRoute: AuthenticatedContractsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMaterialsRoute: AuthenticatedMaterialsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedSeminarTypesRoute: AuthenticatedSeminarTypesRoute,
+  AuthenticatedSitesRoute: AuthenticatedSitesRoute,
+  AuthenticatedTravelRoute: AuthenticatedTravelRoute,
+  AuthenticatedSeminarsIdRoute: AuthenticatedSeminarsIdRoute,
+  AuthenticatedSeminarsNewRoute: AuthenticatedSeminarsNewRoute,
+  AuthenticatedSeminarsIndexRoute: AuthenticatedSeminarsIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
