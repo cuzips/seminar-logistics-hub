@@ -1,24 +1,25 @@
-## Bối cảnh
-Sau khi đối chiếu lại md5 từng file giữa zip và `/dev-server`:
-- Toàn bộ mã nguồn ứng dụng (`src/`, `package.json`, configs…) đã copy đầy đủ, không có file nào chênh lệch nội dung.
-- `src/integrations/supabase/*.ts` và `.env` đã có (do Lovable Cloud tự sinh đúng cho project hiện tại — không nên dùng bản trong zip vì trỏ tới project Supabase cũ).
-- **3 file SQL migration trong `supabase/migrations/` chưa có trên đĩa** dù nội dung đã được chạy vào database.
+# Seed dữ liệu mẫu
 
-## Việc cần làm
-Copy thêm 3 file SQL từ zip vào `/dev-server/supabase/migrations/` để repo khớp 100% với zip gốc:
+Các bảng `seminar_types`, `consultants`, `meeting_sites`, `seminars` đang trống (0 dòng). Code đã copy đầy đủ — chỉ thiếu dữ liệu mẫu. Tôi sẽ chèn dữ liệu mẫu sau:
 
-```
-supabase/migrations/20260604050437_21197760-2308-4061-9fdc-be781b856bed.sql
-supabase/migrations/20260604050506_aa59d9af-bc72-48d1-86b7-b25af33e2717.sql
-supabase/migrations/20260604051638_30455c9b-5205-4323-b86e-ba46b3206ac2.sql
-```
+## Seminar Types (5 loại)
+- Sales Excellence Workshop — 2 phòng, U-shape, AV: projector/mic/whiteboard
+- Leadership Bootcamp — 1 phòng, classroom
+- Negotiation Masterclass — 1 phòng, boardroom
+- Customer Success Training — 2 phòng, theater
+- Train-the-Trainer — 1 phòng, U-shape
 
-Không cần chạy lại migration (database đã có schema và 4 tài khoản demo từ lần chạy trước).
+## Consultants (5 giảng viên)
+- Nguyễn Minh Anh — SGN, anh.nguyen@trainingsinc.vn
+- Trần Hoàng Long — HAN, long.tran@trainingsinc.vn
+- Lê Thị Hương — DAD, huong.le@trainingsinc.vn
+- Phạm Quốc Việt — SGN, viet.pham@trainingsinc.vn
+- David Chen — SIN, david.chen@trainingsinc.vn
 
-## Không thay đổi
-- Không sửa `.env`, `src/integrations/supabase/*.ts` — đã chuẩn cho Cloud hiện tại.
-- Không động vào database.
-- Không sửa mã nguồn ứng dụng.
+## Meeting Sites (4 địa điểm)
+- Lotte Hotel Saigon (HCM) — 12tr/ngày, 80 chỗ
+- Sheraton Hanoi (Hà Nội) — 10tr/ngày, 60 chỗ
+- Pullman Đà Nẵng (Đà Nẵng) — 9tr/ngày, 50 chỗ
+- InterContinental Saigon (HCM) — 15tr/ngày, 100 chỗ
 
-## Kết quả
-Repo sẽ có cấu trúc thư mục giống hệt zip gốc (trừ các file Cloud auto-generate phải khác).
+Sau khi chèn, mở lại trang Seminar Types và Consultants để xác nhận dữ liệu hiển thị.
