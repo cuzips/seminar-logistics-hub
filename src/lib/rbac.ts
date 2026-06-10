@@ -10,6 +10,12 @@ export const ROLE_ALLOWED_PATHS: Record<Exclude<Role, "coordinator">, string[]> 
   consultant: ["/travel", "/consultants"],
 };
 
+// Paths denied even if their prefix is allowed.
+export const ROLE_DENIED_PATHS: Partial<Record<Role, string[]>> = {
+  sales_manager: ["/seminars/new"],
+};
+
+
 // Landing route per role after login / when access is denied.
 export const ROLE_HOME: Record<Role, string> = {
   coordinator: "/dashboard",
