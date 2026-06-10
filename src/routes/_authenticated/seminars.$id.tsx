@@ -212,6 +212,7 @@ function SiteTab({ seminar, onChange }: { seminar: any; onChange: () => void }) 
 
 /* ---------------- CONTRACT TAB ---------------- */
 function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void }) {
+function ContractTab({ seminar, onChange, role }: { seminar: any; onChange: () => void; role: "coordinator" | "sales_manager" | "materials" | "consultant" }) {
   const { data: contract, refetch } = useQuery({
     queryKey: ["contract", seminar.id],
     queryFn: async () => (await supabase.from("contracts").select("*, meeting_sites(*)").eq("seminar_id", seminar.id).maybeSingle()).data,
@@ -230,14 +231,24 @@ function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void
     return <Card><CardContent className="p-6 text-muted-foreground">Hãy chọn địa điểm họp trước khi tạo hợp đồng.</CardContent></Card>;
   }
 
+  // Turn-taking: v1 (and odd versions) belong to coordinator; even versions to sales_manager.
+  // Status pending_coordinator → coordinator's turn; pending_sales → sales_manager's turn.
+  const nextVersion = (contract?.current_version ?? 0) + 1;
+  const expectedRole: "coordinator" | "sales_manager" =
+    !contract
+      ? "coordinator"
+      : (contract.status === "pending_coordinator" ? "coordinator" : "sales_manager");
+  const isMyTurn = role === expectedRole;
+
   const createDraft = async () => {
+    if (role !== "coordinator") return toast.error("Chỉ Coordinator được tạo bản nháp v1");
     const { data: u } = await supabase.auth.getUser();
     const days = (new Date(seminar.end_date).getTime() - new Date(seminar.start_date).getTime()) / 86400000 + 1;
     const site = (seminar as any).meeting_sites;
     const baseCost = site?.cost_per_day * days;
     const { data: c, error } = await supabase.from("contracts").insert({
       seminar_id: seminar.id, site_id: seminar.selected_site_id,
-      status: "pending_coordinator", total_cost: baseCost, current_version: 1,
+      status: "pending_sales", total_cost: baseCost, current_version: 1,
     }).select().single();
     if (error) return toast.error(error.message);
     await supabase.from("contract_versions").insert({
@@ -246,13 +257,14 @@ function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void
       note: null, created_by: u.user!.id,
     });
 
-    await logAction(seminar.id, "Sales Manager tạo bản nháp hợp đồng", {});
-    await notifyRole("coordinator", seminar.id, "contract_draft", "Sales Manager đã gửi bản nháp hợp đồng để xem xét.");
-    toast.success("Đã tạo bản nháp"); refetch(); refetchV(); onChange();
+    await logAction(seminar.id, "Coordinator tạo hợp đồng v1", {});
+    await notifyRole("sales_manager", seminar.id, "contract_draft", "Coordinator đã gửi hợp đồng v1 — vui lòng xem xét.");
+    toast.success("Đã tạo hợp đồng v1"); refetch(); refetchV(); onChange();
   };
 
   const submitVersion = async (action: "edit" | "approve") => {
     if (!contract) return;
+    if (!isMyTurn) return toast.error(`Đang chờ ${expectedRole === "coordinator" ? "Coordinator" : "Sales Manager"}`);
     const { data: u } = await supabase.auth.getUser();
     const newVersion = contract.current_version + 1;
     const isApprove = action === "approve";
@@ -290,14 +302,16 @@ function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void
         <CardHeader>
           <CardTitle>Hợp đồng với {(contract as any)?.meeting_sites?.name ?? "địa điểm đã chọn"}</CardTitle>
           <CardDescription>
-            Vòng lặp đàm phán giữa Coordinator và Sales Manager.
+            Vòng lặp đàm phán: v lẻ (1,3,5…) do Coordinator, v chẵn (2,4,6…) do Sales Manager.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {!contract ? (
             <div>
-              <p className="mb-3 text-sm text-muted-foreground">Sales Manager cần tạo bản nháp đầu tiên.</p>
-              <Button onClick={createDraft}>Tạo hợp đồng</Button>
+              <p className="mb-3 text-sm text-muted-foreground">
+                {role === "coordinator" ? "Tạo hợp đồng v1 để bắt đầu vòng đàm phán." : "Đang chờ Coordinator tạo hợp đồng v1."}
+              </p>
+              <Button onClick={createDraft} disabled={role !== "coordinator"}>Tạo hợp đồng</Button>
             </div>
           ) : (
             <div className="space-y-4">
