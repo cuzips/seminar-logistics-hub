@@ -391,8 +391,8 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
 
   const hotelChains = ["Marriott", "Hilton", "Hyatt Regency", "Sheraton", "InterContinental"];
   const hotelOptions = hotelChains.map((chain, i) => {
-    const price = 150 + seedNum(chain + cityCode) % 200;
-    const rating = 4 + ((seedNum(chain) % 10) / 10);
+    const price = 150 + seedNum(i + 20) % 200;
+    const rating = 4 + ((seedNum(i + 30) % 10) / 10);
     return {
       name: `${chain} ${seminar.city}`,
       address: `${100 + i * 47} ${["Main", "Park", "Broadway", "Market", "Union"][i]} St, ${seminar.city}`,
