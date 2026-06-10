@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { STATUS_LABEL, STATUS_COLOR, formatDate } from "@/lib/seminar-utils";
 import { Plus } from "lucide-react";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole, canAccessPath } from "@/lib/rbac";
 
 export const Route = createFileRoute("/_authenticated/seminars/")({
   component: SeminarsList,
 });
+
 
 function SeminarsList() {
   const { data: seminars = [], isLoading } = useQuery({
