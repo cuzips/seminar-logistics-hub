@@ -36,12 +36,15 @@ function NewSeminar() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!typeId || !consultantId) {
+      return toast.error("Vui lòng chọn loại seminar và giảng viên");
+    }
     setLoading(true);
     const { data: u } = await supabase.auth.getUser();
     const { data, error } = await supabase.from("seminars").insert({
       type_id: typeId, city, start_date: startDate, end_date: endDate,
       consultant_id: consultantId, registrant_count: registrants,
-      notes, status: "booked", created_by: u.user?.id,
+      notes: notes || null, status: "booked", created_by: u.user?.id ?? null,
     }).select().single();
     setLoading(false);
     if (error) return toast.error(error.message);
@@ -51,6 +54,7 @@ function NewSeminar() {
     toast.success("Đã tạo booking");
     navigate({ to: "/seminars/$id", params: { id: data!.id } });
   };
+
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
