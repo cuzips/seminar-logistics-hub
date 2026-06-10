@@ -389,6 +389,18 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
     setRet(returnSchedules[i].code);
   };
 
+  const hotelChains = ["Marriott", "Hilton", "Hyatt Regency", "Sheraton", "InterContinental"];
+  const hotelOptions = hotelChains.map((chain, i) => {
+    const price = 150 + seedNum(chain + cityCode) % 200;
+    const rating = 4 + ((seedNum(chain) % 10) / 10);
+    return {
+      name: `${chain} ${seminar.city}`,
+      address: `${100 + i * 47} ${["Main", "Park", "Broadway", "Market", "Union"][i]} St, ${seminar.city}`,
+      price,
+      rating: Math.min(5, Number(rating.toFixed(1))),
+    };
+  });
+
   const book = async () => {
     const payload = {
       seminar_id: seminar.id, consultant_id: seminar.consultant_id,
