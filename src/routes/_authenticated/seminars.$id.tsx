@@ -322,31 +322,37 @@ function ContractTab({ seminar, onChange, role }: { seminar: any; onChange: () =
               </div>
 
               {contract.status !== "approved" && (
-                <div className="rounded-md border p-4 space-y-3">
-                  <h4 className="font-medium">Phản hồi / cập nhật</h4>
-                  <div>
-                    <Label>Nội dung chỉnh sửa</Label>
-                    <Textarea value={terms} onChange={(e) => setTerms(e.target.value)} placeholder="VD: Tăng số phòng từ 1 lên 2, thêm wireless mic..." />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
+                isMyTurn ? (
+                  <div className="rounded-md border p-4 space-y-3">
+                    <h4 className="font-medium">Phản hồi / cập nhật (v{nextVersion} — {role === "coordinator" ? "Coordinator" : "Sales Manager"})</h4>
                     <div>
-                      <Label>Tổng chi phí mới ($)</Label>
-                      <Input type="number" value={cost} onChange={(e) => setCost(+e.target.value)} placeholder={contract.total_cost.toString()} />
+                      <Label>Nội dung chỉnh sửa</Label>
+                      <Textarea value={terms} onChange={(e) => setTerms(e.target.value)} placeholder="VD: Tăng số phòng từ 1 lên 2, thêm wireless mic..." />
                     </div>
-                    <div>
-                      <Label>Ghi chú</Label>
-                      <Input value={note} onChange={(e) => setNote(e.target.value)} />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label>Tổng chi phí mới ($)</Label>
+                        <Input type="number" value={cost} onChange={(e) => setCost(+e.target.value)} placeholder={contract.total_cost.toString()} />
+                      </div>
+                      <div>
+                        <Label>Ghi chú</Label>
+                        <Input value={note} onChange={(e) => setNote(e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button onClick={() => submitVersion("edit")} variant="outline">
+                        <Send className="mr-2 h-4 w-4" /> Gửi chỉnh sửa
+                      </Button>
+                      <Button onClick={() => submitVersion("approve")}>
+                        <CheckCircle2 className="mr-2 h-4 w-4" /> Chấp thuận phiên bản hiện tại
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button onClick={() => submitVersion("edit")} variant="outline">
-                      <Send className="mr-2 h-4 w-4" /> Gửi chỉnh sửa
-                    </Button>
-                    <Button onClick={() => submitVersion("approve")}>
-                      <CheckCircle2 className="mr-2 h-4 w-4" /> Chấp thuận phiên bản hiện tại
-                    </Button>
+                ) : (
+                  <div className="rounded-md border bg-muted/40 p-4 text-sm text-muted-foreground">
+                    Đang chờ {expectedRole === "coordinator" ? "Coordinator" : "Sales Manager"} thao tác trên v{nextVersion}.
                   </div>
-                </div>
+                )
               )}
             </div>
           )}
