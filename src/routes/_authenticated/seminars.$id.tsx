@@ -389,6 +389,18 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
     setRet(returnSchedules[i].code);
   };
 
+  const hotelChains = ["Marriott", "Hilton", "Hyatt Regency", "Sheraton", "InterContinental"];
+  const hotelOptions = hotelChains.map((chain, i) => {
+    const price = 150 + seedNum(i + 20) % 200;
+    const rating = 4 + ((seedNum(i + 30) % 10) / 10);
+    return {
+      name: `${chain} ${seminar.city}`,
+      address: `${100 + i * 47} ${["Main", "Park", "Broadway", "Market", "Union"][i]} St, ${seminar.city}`,
+      price,
+      rating: Math.min(5, Number(rating.toFixed(1))),
+    };
+  });
+
   const book = async () => {
     const payload = {
       seminar_id: seminar.id, consultant_id: seminar.consultant_id,
@@ -468,6 +480,29 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
         </CardContent>
       </Card>
 
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Khách sạn khả dụng tại {seminar.city}</CardTitle>
+          <CardDescription>Chọn một khách sạn cho consultant.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid gap-2 md:grid-cols-2">
+            {hotelOptions.map((h) => (
+              <li key={h.name}>
+                <button
+                  className={`w-full rounded border p-3 text-left hover:bg-accent/30 ${hotel === h.name ? "border-primary bg-primary/10" : ""}`}
+                  onClick={() => setHotel(h.name)}
+                >
+                  <div className="font-medium">{h.name}</div>
+                  <div className="text-xs text-muted-foreground">{h.address}</div>
+                  <div className="mt-1 text-xs">★ {h.rating} · ${h.price}/đêm</div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
