@@ -237,8 +237,9 @@ function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void
     await supabase.from("contract_versions").insert({
       contract_id: c!.id, version: 1, action: "created",
       terms: { rooms: 1, seating: site?.seating ?? "theater", av: [], days, daily_rate: site?.cost_per_day, total: baseCost },
-      note: "Bản nháp đầu tiên do Sales Manager tạo", created_by: u.user!.id,
+      note: null, created_by: u.user!.id,
     });
+
     await logAction(seminar.id, "Sales Manager tạo bản nháp hợp đồng", {});
     await notifyRole("coordinator", seminar.id, "contract_draft", "Sales Manager đã gửi bản nháp hợp đồng để xem xét.");
     toast.success("Đã tạo bản nháp"); refetch(); refetchV(); onChange();
