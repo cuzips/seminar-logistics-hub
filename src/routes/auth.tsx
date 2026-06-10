@@ -8,6 +8,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from "sonner";
 import { ROLE_LABEL } from "@/lib/seminar-utils";
+import { pickPrimaryRole, ROLE_HOME, type Role } from "@/lib/rbac";
+
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
