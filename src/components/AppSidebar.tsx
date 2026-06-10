@@ -27,8 +27,13 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const { data: roles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(roles);
+  const visibleItems = items.filter((it) => canAccessPath(role, it.url));
 
   const isActive = (url: string) => pathname === url || pathname.startsWith(url + "/");
+
 
   const signOut = async () => {
     await supabase.auth.signOut();
