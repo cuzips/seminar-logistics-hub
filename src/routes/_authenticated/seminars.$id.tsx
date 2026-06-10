@@ -24,10 +24,13 @@ export const Route = createFileRoute("/_authenticated/seminars/$id")({
 function SeminarDetail() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useCurrentUser();
   const { data: roles } = useUserRoles(user?.id);
   const role = pickPrimaryRole(roles);
   const salesOnly = role === "sales_manager";
+  const isCoordinator = role === "coordinator";
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data: seminar, isLoading } = useQuery({
     queryKey: ["seminar", id],
@@ -47,13 +50,21 @@ function SeminarDetail() {
 
   const days = daysUntil(seminar.start_date);
 
+  const handleDelete = async () => {
+    const { error } = await supabase.from("seminars").delete().eq("id", id);
+    if (error) { toast.error("Không xóa được: " + error.message); return; }
+    toast.success("Đã xóa seminar");
+    qc.invalidateQueries({ queryKey: ["seminars-list"] });
+    navigate({ to: "/seminars" });
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <Link to="/seminars" className="text-sm text-muted-foreground hover:underline">
           <ArrowLeft className="mr-1 inline h-3 w-3" /> Về danh sách
         </Link>
-        <div className="mt-2 flex items-start justify-between">
+        <div className="mt-2 flex items-start justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl font-bold">{(seminar as any).seminar_types?.name}</h1>
             <p className="text-muted-foreground">
@@ -62,10 +73,41 @@ function SeminarDetail() {
               {" · "}{seminar.registrant_count} người đăng ký
             </p>
           </div>
-          <span className={`rounded-full px-3 py-1.5 text-sm font-medium ${STATUS_COLOR[seminar.status]}`}>
-            {STATUS_LABEL[seminar.status]}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={`rounded-full px-3 py-1.5 text-sm font-medium ${STATUS_COLOR[seminar.status]}`}>
+              {STATUS_LABEL[seminar.status]}
+            </span>
+            {isCoordinator && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                  <Pencil className="mr-1 h-4 w-4" /> Sửa
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm">
+                      <Trash2 className="mr-1 h-4 w-4" /> Xóa
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Xóa seminar này?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Hành động này sẽ xóa vĩnh viễn seminar cùng toàn bộ dữ liệu liên quan (hợp đồng, travel, materials...). Không thể hoàn tác.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Hủy</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>Xóa</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            )}
+          </div>
         </div>
+        {isCoordinator && (
+          <EditSeminarDialog open={editOpen} onOpenChange={setEditOpen} seminar={seminar} onSaved={refresh} />
+        )}
         {days >= 0 && days <= 14 && (
           <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
             ⚠️ Còn {days} ngày — cần hoàn tất chuẩn bị materials và travel.
