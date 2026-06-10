@@ -144,6 +144,77 @@ async function notifyRole(role: AppRole, seminarId: string, type: string, messag
   await supabase.from("notifications").insert({ target_role: role, seminar_id: seminarId, type, message });
 }
 
+/* ---------------- EDIT SEMINAR DIALOG ---------------- */
+function EditSeminarDialog({ open, onOpenChange, seminar, onSaved }: { open: boolean; onOpenChange: (o: boolean) => void; seminar: any; onSaved: () => void }) {
+  const [city, setCity] = useState(seminar.city ?? "");
+  const [startDate, setStartDate] = useState(seminar.start_date ?? "");
+  const [endDate, setEndDate] = useState(seminar.end_date ?? "");
+  const [registrantCount, setRegistrantCount] = useState(String(seminar.registrant_count ?? 0));
+  const [status, setStatus] = useState(seminar.status);
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    const { error } = await supabase.from("seminars").update({
+      city,
+      start_date: startDate,
+      end_date: endDate,
+      registrant_count: Number(registrantCount) || 0,
+      status,
+    }).eq("id", seminar.id);
+    setSaving(false);
+    if (error) { toast.error("Không lưu được: " + error.message); return; }
+    toast.success("Đã cập nhật seminar");
+    await logAction(seminar.id, "Coordinator cập nhật seminar", { city, startDate, endDate, registrantCount, status });
+    onSaved();
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Sửa seminar</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div>
+            <Label>Thành phố</Label>
+            <Input value={city} onChange={(e) => setCity(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Ngày bắt đầu</Label>
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </div>
+            <div>
+              <Label>Ngày kết thúc</Label>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <Label>Số người đăng ký</Label>
+            <Input type="number" value={registrantCount} onChange={(e) => setRegistrantCount(e.target.value)} />
+          </div>
+          <div>
+            <Label>Trạng thái</Label>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(STATUS_LABEL).map(([k, v]) => (
+                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Hủy</Button>
+          <Button onClick={save} disabled={saving}>{saving ? "Đang lưu..." : "Lưu"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
 /* ---------------- SITE TAB ---------------- */
 function SiteTab({ seminar, onChange }: { seminar: any; onChange: () => void }) {
   const { data: sitesInCity = [] } = useQuery({
