@@ -452,12 +452,13 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
               {flightSchedules.map((f, i) => (
                 <li key={f.code} className="flex items-center gap-2">
                   <button
-                    className={`flex-1 rounded border p-2 text-left hover:bg-accent/30 ${outbound === f.code ? "border-primary bg-primary/10" : ""}`}
+                    disabled={!!travel}
+                    className={`flex-1 rounded border p-2 text-left hover:bg-accent/30 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent ${outbound === f.code ? "border-primary bg-primary/10" : ""}`}
                     onClick={() => setOutbound(f.code)}
                   >
                     {f.code}
                   </button>
-                  <Button variant="outline" size="sm" onClick={() => pickRoundTrip(i)}>Khứ hồi</Button>
+                  <Button variant="outline" size="sm" disabled={!!travel} onClick={() => pickRoundTrip(i)}>Khứ hồi</Button>
                 </li>
               ))}
             </ul>
@@ -468,7 +469,8 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
               {returnSchedules.map((f) => (
                 <li key={f.code}>
                   <button
-                    className={`w-full rounded border p-2 text-left hover:bg-accent/30 ${ret === f.code ? "border-primary bg-primary/10" : ""}`}
+                    disabled={!!travel}
+                    className={`w-full rounded border p-2 text-left hover:bg-accent/30 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent ${ret === f.code ? "border-primary bg-primary/10" : ""}`}
                     onClick={() => setRet(f.code)}
                   >
                     {f.code}
@@ -491,7 +493,8 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
             {hotelOptions.map((h) => (
               <li key={h.name}>
                 <button
-                  className={`w-full rounded border p-3 text-left hover:bg-accent/30 ${hotel === h.name ? "border-primary bg-primary/10" : ""}`}
+                  disabled={!!travel}
+                  className={`w-full rounded border p-3 text-left hover:bg-accent/30 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent ${hotel === h.name ? "border-primary bg-primary/10" : ""}`}
                   onClick={() => setHotel(h.name)}
                 >
                   <div className="font-medium">{h.name}</div>
@@ -507,23 +510,23 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
       <Card>
         <CardHeader>
           <CardTitle>Đặt vé qua travel agency</CardTitle>
-          <CardDescription>Global Travel Co.</CardDescription>
+          <CardDescription>{travel ? "Vé đã được đặt — form đã khóa." : "Global Travel Co."}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
             <Label>Chuyến đi</Label>
-            <Input value={outbound} onChange={(e) => setOutbound(e.target.value)} placeholder="Chọn từ danh sách trên" />
+            <Input value={outbound} onChange={(e) => setOutbound(e.target.value)} placeholder="Chọn từ danh sách trên" disabled={!!travel} />
           </div>
           <div>
             <Label>Chuyến về</Label>
-            <Input value={ret} onChange={(e) => setRet(e.target.value)} placeholder="VD: Delta 412 — JFK ← NYC 18:00" />
+            <Input value={ret} onChange={(e) => setRet(e.target.value)} placeholder="VD: Delta 412 — JFK ← NYC 18:00" disabled={!!travel} />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>Hãng</Label><Input value={airline} onChange={(e) => setAirline(e.target.value)} /></div>
-            <div><Label>Khách sạn</Label><Input value={hotel} onChange={(e) => setHotel(e.target.value)} /></div>
+            <div><Label>Hãng</Label><Input value={airline} onChange={(e) => setAirline(e.target.value)} disabled={!!travel} /></div>
+            <div><Label>Khách sạn</Label><Input value={hotel} onChange={(e) => setHotel(e.target.value)} disabled={!!travel} /></div>
           </div>
           <div className="flex gap-2">
-            <Button onClick={book}><Plane className="mr-2 h-4 w-4" /> {travel ? "Cập nhật" : "Đặt vé"}</Button>
+            {!travel && <Button onClick={book}><Plane className="mr-2 h-4 w-4" /> Đặt vé</Button>}
             {travel && <Button variant="outline" onClick={sendItinerary}>Gửi itinerary cho consultant</Button>}
           </div>
           {travel && (
