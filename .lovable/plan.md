@@ -1,25 +1,20 @@
-# Seed dữ liệu mẫu
+# Phân quyền theo vai trò (không ảnh hưởng chức năng hiện có)
 
-Các bảng `seminar_types`, `consultants`, `meeting_sites`, `seminars` đang trống (0 dòng). Code đã copy đầy đủ — chỉ thiếu dữ liệu mẫu. Tôi sẽ chèn dữ liệu mẫu sau:
+| Vai trò | Menu thấy được |
+|---|---|
+| **coordinator** | Tất cả menu hiện tại |
+| **sales_manager** | Seminar, Hợp đồng |
+| **materials** | Materials |
+| **consultant** | Travel, Giảng viên *(chỉ xem)* |
 
-## Seminar Types (5 loại)
-- Sales Excellence Workshop — 2 phòng, U-shape, AV: projector/mic/whiteboard
-- Leadership Bootcamp — 1 phòng, classroom
-- Negotiation Masterclass — 1 phòng, boardroom
-- Customer Success Training — 2 phòng, theater
-- Train-the-Trainer — 1 phòng, U-shape
+Chỉ thêm lớp lọc UI + route guard; **không** đụng vào logic / RLS / database hiện có.
 
-## Consultants (5 giảng viên)
-- Nguyễn Minh Anh — SGN, anh.nguyen@trainingsinc.vn
-- Trần Hoàng Long — HAN, long.tran@trainingsinc.vn
-- Lê Thị Hương — DAD, huong.le@trainingsinc.vn
-- Phạm Quốc Việt — SGN, viet.pham@trainingsinc.vn
-- David Chen — SIN, david.chen@trainingsinc.vn
+## Thay đổi
 
-## Meeting Sites (4 địa điểm)
-- Lotte Hotel Saigon (HCM) — 12tr/ngày, 80 chỗ
-- Sheraton Hanoi (Hà Nội) — 10tr/ngày, 60 chỗ
-- Pullman Đà Nẵng (Đà Nẵng) — 9tr/ngày, 50 chỗ
-- InterContinental Saigon (HCM) — 15tr/ngày, 100 chỗ
+1. **`src/hooks/useCurrentUser.ts`** — thêm hook `useCurrentRole()` (đọc từ `user_roles`, trả role đầu tiên).
+2. **`src/components/AppSidebar.tsx`** — mỗi item gắn `roles: string[]`; lọc theo role hiện tại trước khi render. Coordinator giữ nguyên đầy đủ.
+3. **`src/routes/_authenticated/route.tsx`** — sau khi xác thực, đọc role; nếu pathname không nằm trong danh sách được phép → `navigate` về trang đầu tiên được phép + toast "Không có quyền".
+4. **`src/routes/_authenticated/consultants.tsx`** — nếu role = `consultant`, ẩn các nút Thêm / Sửa / Xóa (chỉ render danh sách). Các role khác giữ nguyên.
+5. **Trang sau đăng nhập (`auth.tsx`)** — sau khi đăng nhập thành công, điều hướng đến route đầu tiên user có quyền (coordinator → `/dashboard`, sales → `/seminars`, materials → `/materials`, consultant → `/travel`).
 
-Sau khi chèn, mở lại trang Seminar Types và Consultants để xác nhận dữ liệu hiển thị.
+Không sửa RLS, không sửa form, không sửa các trang khác.

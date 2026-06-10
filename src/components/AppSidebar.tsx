@@ -6,6 +6,8 @@ import {
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole, canAccessPath } from "@/lib/rbac";
 
 const items = [
   { title: "Tổng quan", url: "/dashboard", icon: LayoutDashboard },
@@ -19,13 +21,19 @@ const items = [
   { title: "Thông báo", url: "/notifications", icon: Bell },
 ];
 
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const { data: roles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(roles);
+  const visibleItems = items.filter((it) => canAccessPath(role, it.url));
 
   const isActive = (url: string) => pathname === url || pathname.startsWith(url + "/");
+
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -51,7 +59,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Điều hướng</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <Link to={item.url} className="flex items-center gap-2">

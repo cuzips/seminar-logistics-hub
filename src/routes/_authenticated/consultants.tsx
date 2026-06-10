@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole } from "@/lib/rbac";
+
 
 export const Route = createFileRoute("/_authenticated/consultants")({
   component: ConsultantsPage,
@@ -16,6 +19,10 @@ export const Route = createFileRoute("/_authenticated/consultants")({
 
 function ConsultantsPage() {
   const qc = useQueryClient();
+  const { user } = useCurrentUser();
+  const { data: roles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(roles);
+  const readOnly = role === "consultant";
   const { data: consultants = [] } = useQuery({
     queryKey: ["all-consultants"],
     queryFn: async () => (await supabase.from("consultants").select("*").order("name")).data ?? [],
@@ -24,6 +31,7 @@ function ConsultantsPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", home_airport: "", airline_pref: "Delta", seat: "Aisle" });
 
   const add = async () => {
+
     const { error } = await supabase.from("consultants").insert({
       name: form.name, email: form.email, phone: form.phone, home_airport: form.home_airport,
       travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard" },
@@ -40,6 +48,7 @@ function ConsultantsPage() {
           <h1 className="font-display text-3xl font-bold">Giảng viên</h1>
           <p className="text-muted-foreground">Hồ sơ và preferences travel.</p>
         </div>
+        {!readOnly && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="mr-2 h-4 w-4" /> Thêm</Button></DialogTrigger>
           <DialogContent>
@@ -57,6 +66,8 @@ function ConsultantsPage() {
             </div>
           </DialogContent>
         </Dialog>
+        )}
+
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
