@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { STATUS_LABEL, STATUS_COLOR, CONTRACT_STATUS_LABEL, formatDate, formatCurrency, computeMaterials, daysUntil } from "@/lib/seminar-utils";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle2, Send, Package, Plane } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Send, Package, Plane, Pencil, Trash2 } from "lucide-react";
 import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
 import { pickPrimaryRole } from "@/lib/rbac";
 
