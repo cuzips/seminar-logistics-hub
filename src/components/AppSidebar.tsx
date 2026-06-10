@@ -6,6 +6,8 @@ import {
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole, canAccessPath } from "@/lib/rbac";
 
 const items = [
   { title: "Tổng quan", url: "/dashboard", icon: LayoutDashboard },
@@ -18,6 +20,7 @@ const items = [
   { title: "Materials", url: "/materials", icon: Package },
   { title: "Thông báo", url: "/notifications", icon: Bell },
 ];
+
 
 export function AppSidebar() {
   const { state } = useSidebar();
