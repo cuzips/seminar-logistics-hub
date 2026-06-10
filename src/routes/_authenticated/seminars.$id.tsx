@@ -22,6 +22,10 @@ export const Route = createFileRoute("/_authenticated/seminars/$id")({
 function SeminarDetail() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
+  const { user } = useCurrentUser();
+  const { data: roles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(roles);
+  const salesOnly = role === "sales_manager";
 
   const { data: seminar, isLoading } = useQuery({
     queryKey: ["seminar", id],
