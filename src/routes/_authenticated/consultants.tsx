@@ -79,7 +79,7 @@ function ConsultantsPage() {
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
               <div>SĐT: {c.phone}</div>
-              <div>Sân bay: <b>{c.home_airport}</b></div>
+              <div>Sở thích: <b>{c.travel_prefs?.hobby ?? "—"}</b></div>
               <div>Hãng: {c.travel_prefs?.airline_pref}</div>
               <div>Ghế: {c.travel_prefs?.seat}</div>
             </CardContent>
