@@ -23,37 +23,44 @@ function AuthPage() {
   const [role, setRole] = useState("coordinator");
   const [loading, setLoading] = useState(false);
 
+  const redirectToHome = async (userId: string) => {
+    const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+    const role = pickPrimaryRole(data?.map((r) => r.role as string));
+    navigate({ to: ROLE_HOME[role], replace: true });
+  };
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/dashboard", replace: true });
+      if (data.user) redirectToHome(data.user.id);
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Đăng nhập thành công");
-    navigate({ to: "/dashboard", replace: true });
+    if (data.user) await redirectToHome(data.user.id);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}${ROLE_HOME[(role as Role) ?? "coordinator"]}`,
         data: { full_name: fullName, role },
       },
     });
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Đăng ký thành công. Bạn đã được đăng nhập.");
-    navigate({ to: "/dashboard", replace: true });
+    if (data.user) await redirectToHome(data.user.id);
   };
 
   const DEMO_PASSWORD = "Demo@1234";
@@ -66,12 +73,13 @@ function AuthPage() {
 
   const quickLogin = async (demoEmail: string) => {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: demoEmail, password: DEMO_PASSWORD });
+    const { data, error } = await supabase.auth.signInWithPassword({ email: demoEmail, password: DEMO_PASSWORD });
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Đăng nhập thành công");
-    navigate({ to: "/dashboard", replace: true });
+    if (data.user) await redirectToHome(data.user.id);
   };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary px-4 py-10">
