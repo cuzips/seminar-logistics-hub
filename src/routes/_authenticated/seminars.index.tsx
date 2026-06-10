@@ -39,9 +39,12 @@ function SeminarsList() {
           <h1 className="font-display text-3xl font-bold">Seminar</h1>
           <p className="text-muted-foreground">Danh sách booking từ phòng Bookings.</p>
         </div>
-        <Button asChild>
-          <Link to="/seminars/new"><Plus className="mr-2 h-4 w-4" /> Booking mới</Link>
-        </Button>
+        {canCreate && (
+          <Button asChild>
+            <Link to="/seminars/new"><Plus className="mr-2 h-4 w-4" /> Booking mới</Link>
+          </Button>
+        )}
+
       </div>
 
       <Card>
