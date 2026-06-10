@@ -28,13 +28,13 @@ function ConsultantsPage() {
     queryFn: async () => (await supabase.from("consultants").select("*").order("name")).data ?? [],
   });
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", home_airport: "", airline_pref: "Delta", seat: "Aisle" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", hobby: "", airline_pref: "Delta", seat: "Aisle" });
 
   const add = async () => {
 
     const { error } = await supabase.from("consultants").insert({
-      name: form.name, email: form.email, phone: form.phone, home_airport: form.home_airport,
-      travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard" },
+      name: form.name, email: form.email, phone: form.phone, home_airport: "JFK",
+      travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard", hobby: form.hobby },
     });
     if (error) return toast.error(error.message);
     toast.success("Đã thêm giảng viên");
@@ -57,8 +57,8 @@ function ConsultantsPage() {
               <div><Label>Họ tên</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>SĐT</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-              <div className="grid grid-cols-3 gap-2">
-                <div><Label>Sân bay</Label><Input value={form.home_airport} onChange={(e) => setForm({ ...form, home_airport: e.target.value })} /></div>
+              <div><Label>Sở thích</Label><Input value={form.hobby} onChange={(e) => setForm({ ...form, hobby: e.target.value })} placeholder="VD: Đọc sách, golf, cà phê..." /></div>
+              <div className="grid grid-cols-2 gap-2">
                 <div><Label>Hãng</Label><Input value={form.airline_pref} onChange={(e) => setForm({ ...form, airline_pref: e.target.value })} /></div>
                 <div><Label>Ghế</Label><Input value={form.seat} onChange={(e) => setForm({ ...form, seat: e.target.value })} /></div>
               </div>
@@ -79,7 +79,7 @@ function ConsultantsPage() {
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
               <div>SĐT: {c.phone}</div>
-              <div>Sân bay: <b>{c.home_airport}</b></div>
+              <div>Sở thích: <b>{c.travel_prefs?.hobby ?? "—"}</b></div>
               <div>Hãng: {c.travel_prefs?.airline_pref}</div>
               <div>Ghế: {c.travel_prefs?.seat}</div>
             </CardContent>
