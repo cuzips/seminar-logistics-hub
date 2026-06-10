@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useCurrentUser, useUserRoles } from "@/hooks/useCurrentUser";
+import { pickPrimaryRole } from "@/lib/rbac";
+
 
 export const Route = createFileRoute("/_authenticated/consultants")({
   component: ConsultantsPage,
