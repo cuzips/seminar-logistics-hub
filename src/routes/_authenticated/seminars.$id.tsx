@@ -211,7 +211,6 @@ function SiteTab({ seminar, onChange }: { seminar: any; onChange: () => void }) 
 }
 
 /* ---------------- CONTRACT TAB ---------------- */
-function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void }) {
 function ContractTab({ seminar, onChange, role }: { seminar: any; onChange: () => void; role: "coordinator" | "sales_manager" | "materials" | "consultant" }) {
   const { data: contract, refetch } = useQuery({
     queryKey: ["contract", seminar.id],
