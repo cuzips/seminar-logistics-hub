@@ -48,6 +48,7 @@ function ConsultantsPage() {
           <h1 className="font-display text-3xl font-bold">Giảng viên</h1>
           <p className="text-muted-foreground">Hồ sơ và preferences travel.</p>
         </div>
+        {!readOnly && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild><Button><Plus className="mr-2 h-4 w-4" /> Thêm</Button></DialogTrigger>
           <DialogContent>
@@ -65,6 +66,8 @@ function ConsultantsPage() {
             </div>
           </DialogContent>
         </Dialog>
+        )}
+
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
