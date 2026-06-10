@@ -74,22 +74,46 @@ function SitesPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {sites.map((s: any) => (
-          <Card key={s.id}>
-            <CardHeader>
-              <CardTitle>{s.name}</CardTitle>
-              <p className="text-sm text-muted-foreground">{s.city} · {s.address}</p>
-            </CardHeader>
-            <CardContent className="space-y-1 text-sm">
-              <div>Sales Manager: <b>{s.sales_manager_name}</b></div>
-              <div>Sức chứa: {s.max_capacity}</div>
-              <div>Giá/ngày: {formatCurrency(s.cost_per_day)}</div>
-              <div className="text-xs text-muted-foreground">{s.space_info}</div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flex flex-wrap gap-2">
+        <Button variant={cityFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setCityFilter("all")}>
+          Tất cả ({sites.length})
+        </Button>
+        {CITIES.map((c) => {
+          const n = sites.filter((s: any) => s.city === c).length;
+          return (
+            <Button key={c} variant={cityFilter === c ? "default" : "outline"} size="sm" onClick={() => setCityFilter(c)}>
+              {c} ({n})
+            </Button>
+          );
+        })}
       </div>
+
+      {(cityFilter === "all" ? CITIES : [cityFilter]).map((city) => {
+        const list = sites.filter((s: any) => s.city === city);
+        if (!list.length) return null;
+        return (
+          <section key={city} className="space-y-3">
+            <h2 className="font-display text-xl font-semibold">{city}</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {list.map((s: any) => (
+                <Card key={s.id}>
+                  <CardHeader>
+                    <CardTitle>{s.name}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{s.city} · {s.address}</p>
+                  </CardHeader>
+                  <CardContent className="space-y-1 text-sm">
+                    <div>Sales Manager: <b>{s.sales_manager_name}</b></div>
+                    <div>Sức chứa: {s.max_capacity}</div>
+                    <div>Giá/ngày: {formatCurrency(s.cost_per_day)}</div>
+                    <div className="text-xs text-muted-foreground">{s.space_info}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+
     </div>
   );
 }
