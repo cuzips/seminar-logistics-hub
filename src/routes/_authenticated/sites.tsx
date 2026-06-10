@@ -27,7 +27,9 @@ function SitesPage() {
     queryFn: async () => (await supabase.from("meeting_sites").select("*").order("city")).data ?? [],
   });
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", city: "", address: "", sales_manager_name: "", cost_per_day: 0, max_capacity: 50, space_info: "" });
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [form, setForm] = useState({ name: "", city: "Sài Gòn", address: "", sales_manager_name: "", cost_per_day: 0, max_capacity: 50, space_info: "" });
+
 
   const add = async () => {
     const { error } = await supabase.from("meeting_sites").insert(form);
