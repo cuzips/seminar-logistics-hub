@@ -369,11 +369,25 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
   const [airline, setAirline] = useState(c?.travel_prefs?.airline_pref ?? "Delta");
   const [hotel, setHotel] = useState("");
 
-  const flightSchedules = [
-    `${airline} ${100 + Math.floor(Math.random() * 900)} — ${c?.home_airport} → ${seminar.city.slice(0, 3).toUpperCase()} 08:30`,
-    `${airline} ${100 + Math.floor(Math.random() * 900)} — ${c?.home_airport} → ${seminar.city.slice(0, 3).toUpperCase()} 14:15`,
-    `${airline} ${100 + Math.floor(Math.random() * 900)} — ${c?.home_airport} → ${seminar.city.slice(0, 3).toUpperCase()} 19:00`,
-  ];
+  const cityCode = seminar.city ? seminar.city.slice(0, 3).toUpperCase() : "DST";
+  const home = c?.home_airport ?? "HOME";
+  const outboundTimes = ["08:30", "14:15", "19:00"];
+  const returnTimes = ["09:45", "16:20", "21:10"];
+  const seedNum = (offset: number) => 100 + ((seminar.id?.charCodeAt(0) ?? 0) + offset * 37) % 900;
+
+  const flightSchedules = outboundTimes.map((time, i) => ({
+    code: `${airline} ${seedNum(i)} — ${home} → ${cityCode} ${time}`,
+    time,
+  }));
+  const returnSchedules = returnTimes.map((time, i) => ({
+    code: `${airline} ${seedNum(i + 10)} — ${cityCode} → ${home} ${time}`,
+    time,
+  }));
+
+  const pickRoundTrip = (i: number) => {
+    setOutbound(flightSchedules[i].code);
+    setRet(returnSchedules[i].code);
+  };
 
   const book = async () => {
     const payload = {
@@ -415,19 +429,45 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Lịch chuyến bay khả dụng</CardTitle></CardHeader>
-        <CardContent>
-          <ul className="space-y-1 text-sm">
-            {flightSchedules.map((f) => (
-              <li key={f}>
-                <button className="rounded border p-2 hover:bg-accent/30 w-full text-left" onClick={() => setOutbound(f)}>
-                  {f}
-                </button>
-              </li>
-            ))}
-          </ul>
+        <CardHeader>
+          <CardTitle>Lịch chuyến bay khả dụng</CardTitle>
+          <CardDescription>Chọn chuyến đi & chuyến về, hoặc bấm "Chọn khứ hồi" để chọn cả cặp.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <div>
+            <div className="mb-2 text-sm font-semibold">Chuyến đi ({home} → {cityCode})</div>
+            <ul className="space-y-1 text-sm">
+              {flightSchedules.map((f, i) => (
+                <li key={f.code} className="flex items-center gap-2">
+                  <button
+                    className={`flex-1 rounded border p-2 text-left hover:bg-accent/30 ${outbound === f.code ? "border-primary bg-primary/10" : ""}`}
+                    onClick={() => setOutbound(f.code)}
+                  >
+                    {f.code}
+                  </button>
+                  <Button variant="outline" size="sm" onClick={() => pickRoundTrip(i)}>Khứ hồi</Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <div className="mb-2 text-sm font-semibold">Chuyến về ({cityCode} → {home})</div>
+            <ul className="space-y-1 text-sm">
+              {returnSchedules.map((f) => (
+                <li key={f.code}>
+                  <button
+                    className={`w-full rounded border p-2 text-left hover:bg-accent/30 ${ret === f.code ? "border-primary bg-primary/10" : ""}`}
+                    onClick={() => setRet(f.code)}
+                  >
+                    {f.code}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </CardContent>
       </Card>
+
 
       <Card>
         <CardHeader>
