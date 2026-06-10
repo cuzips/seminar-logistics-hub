@@ -17,6 +17,9 @@ export const Route = createFileRoute("/_authenticated/sites")({
   component: SitesPage,
 });
 
+const CITIES = ["Sài Gòn", "Hà Nội", "Đà Nẵng"] as const;
+
+
 function SitesPage() {
   const qc = useQueryClient();
   const { data: sites = [] } = useQuery({
