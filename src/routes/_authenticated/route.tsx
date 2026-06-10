@@ -29,7 +29,7 @@ function AuthedLayout() {
     if (rolesLoading || !roles) return;
     if (!canAccessPath(role, pathname)) {
       toast.error("Bạn không có quyền truy cập trang này");
-      navigate({ to: ROLE_HOME[role], replace: true });
+      navigate({ to: ROLE_HOME[role] as string, replace: true } as any);
     }
   }, [role, pathname, rolesLoading, roles, navigate]);
 
