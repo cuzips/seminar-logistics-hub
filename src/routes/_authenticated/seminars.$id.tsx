@@ -291,7 +291,7 @@ function ContractTab({ seminar, onChange }: { seminar: any; onChange: () => void
           {!contract ? (
             <div>
               <p className="mb-3 text-sm text-muted-foreground">Sales Manager cần tạo bản nháp đầu tiên.</p>
-              <Button onClick={createDraft}>Tạo bản nháp (Sales Manager)</Button>
+              <Button onClick={createDraft}>Tạo hợp đồng</Button>
             </div>
           ) : (
             <div className="space-y-4">
