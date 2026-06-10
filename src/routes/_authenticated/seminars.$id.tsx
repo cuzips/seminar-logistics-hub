@@ -483,6 +483,29 @@ function TravelTab({ seminar, onChange }: { seminar: any; onChange: () => void }
 
       <Card>
         <CardHeader>
+          <CardTitle>Khách sạn khả dụng tại {seminar.city}</CardTitle>
+          <CardDescription>Chọn một khách sạn cho consultant.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid gap-2 md:grid-cols-2">
+            {hotelOptions.map((h) => (
+              <li key={h.name}>
+                <button
+                  className={`w-full rounded border p-3 text-left hover:bg-accent/30 ${hotel === h.name ? "border-primary bg-primary/10" : ""}`}
+                  onClick={() => setHotel(h.name)}
+                >
+                  <div className="font-medium">{h.name}</div>
+                  <div className="text-xs text-muted-foreground">{h.address}</div>
+                  <div className="mt-1 text-xs">★ {h.rating} · ${h.price}/đêm</div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Đặt vé qua travel agency</CardTitle>
           <CardDescription>Global Travel Co.</CardDescription>
         </CardHeader>
