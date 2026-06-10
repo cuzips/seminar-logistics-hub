@@ -26,7 +26,7 @@ function AuthPage() {
   const redirectToHome = async (userId: string) => {
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
     const role = pickPrimaryRole(data?.map((r) => r.role as string));
-    navigate({ to: ROLE_HOME[role], replace: true });
+    navigate({ to: ROLE_HOME[role] as string, replace: true } as any);
   };
 
   useEffect(() => {
