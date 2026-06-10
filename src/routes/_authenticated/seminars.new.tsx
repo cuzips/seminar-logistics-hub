@@ -77,8 +77,16 @@ function NewSeminar() {
             </div>
             <div>
               <Label>Thành phố</Label>
-              <Input value={city} onChange={(e) => setCity(e.target.value)} required />
+              <Select value={city} onValueChange={setCity} required>
+                <SelectTrigger><SelectValue placeholder="Chọn thành phố" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Sài Gòn">Sài Gòn</SelectItem>
+                  <SelectItem value="Hà Nội">Hà Nội</SelectItem>
+                  <SelectItem value="Đà Nẵng">Đà Nẵng</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Ngày bắt đầu</Label>
