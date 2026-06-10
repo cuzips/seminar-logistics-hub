@@ -19,6 +19,10 @@ export const Route = createFileRoute("/_authenticated/consultants")({
 
 function ConsultantsPage() {
   const qc = useQueryClient();
+  const { user } = useCurrentUser();
+  const { data: roles } = useUserRoles(user?.id);
+  const role = pickPrimaryRole(roles);
+  const readOnly = role === "consultant";
   const { data: consultants = [] } = useQuery({
     queryKey: ["all-consultants"],
     queryFn: async () => (await supabase.from("consultants").select("*").order("name")).data ?? [],
@@ -27,6 +31,7 @@ function ConsultantsPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", home_airport: "", airline_pref: "Delta", seat: "Aisle" });
 
   const add = async () => {
+
     const { error } = await supabase.from("consultants").insert({
       name: form.name, email: form.email, phone: form.phone, home_airport: form.home_airport,
       travel_prefs: { airline_pref: form.airline_pref, seat: form.seat, meal: "Standard" },
