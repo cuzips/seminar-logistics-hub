@@ -1,20 +1,14 @@
-# Phân quyền theo vai trò (không ảnh hưởng chức năng hiện có)
+# Cho phép chọn cả vé chuyến về trong tab Travel
 
-| Vai trò | Menu thấy được |
-|---|---|
-| **coordinator** | Tất cả menu hiện tại |
-| **sales_manager** | Seminar, Hợp đồng |
-| **materials** | Materials |
-| **consultant** | Travel, Giảng viên *(chỉ xem)* |
+Hiện tại "Lịch chuyến bay khả dụng" trong tab Travel của trang chi tiết seminar chỉ liệt kê chuyến đi và bấm vào chỉ điền ô **Chuyến đi**. Coordinator không có cách chọn nhanh chuyến về.
 
-Chỉ thêm lớp lọc UI + route guard; **không** đụng vào logic / RLS / database hiện có.
+## Thay đổi (chỉ trong `src/routes/_authenticated/seminars.$id.tsx`, hàm `TravelTab`)
 
-## Thay đổi
+1. Tạo thêm mảng `returnSchedules` (chiều ngược lại: `seminar.city → home_airport`) với 3 khung giờ buổi chiều/tối.
+2. Đổi card "Lịch chuyến bay khả dụng" thành **2 cột**:
+   - **Chuyến đi** — danh sách `flightSchedules`, click → set `outbound`.
+   - **Chuyến về** — danh sách `returnSchedules`, click → set `ret`.
+3. Thêm nút **"Chọn cặp khứ hồi"** ở mỗi hàng chuyến đi: chọn nhanh chuyến đi + chuyến về cùng cặp khung giờ tương ứng (đi sáng ↔ về tối cùng ngày kết thúc).
+4. Giữ nguyên 2 ô Input "Chuyến đi" / "Chuyến về" bên dưới để vẫn có thể sửa tay.
 
-1. **`src/hooks/useCurrentUser.ts`** — thêm hook `useCurrentRole()` (đọc từ `user_roles`, trả role đầu tiên).
-2. **`src/components/AppSidebar.tsx`** — mỗi item gắn `roles: string[]`; lọc theo role hiện tại trước khi render. Coordinator giữ nguyên đầy đủ.
-3. **`src/routes/_authenticated/route.tsx`** — sau khi xác thực, đọc role; nếu pathname không nằm trong danh sách được phép → `navigate` về trang đầu tiên được phép + toast "Không có quyền".
-4. **`src/routes/_authenticated/consultants.tsx`** — nếu role = `consultant`, ẩn các nút Thêm / Sửa / Xóa (chỉ render danh sách). Các role khác giữ nguyên.
-5. **Trang sau đăng nhập (`auth.tsx`)** — sau khi đăng nhập thành công, điều hướng đến route đầu tiên user có quyền (coordinator → `/dashboard`, sales → `/seminars`, materials → `/materials`, consultant → `/travel`).
-
-Không sửa RLS, không sửa form, không sửa các trang khác.
+Không sửa schema, không sửa file khác, không ảnh hưởng các tab khác.
