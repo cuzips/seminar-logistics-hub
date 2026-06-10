@@ -57,8 +57,8 @@ function ConsultantsPage() {
               <div><Label>Họ tên</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
               <div><Label>SĐT</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-              <div className="grid grid-cols-3 gap-2">
-                <div><Label>Sân bay</Label><Input value={form.home_airport} onChange={(e) => setForm({ ...form, home_airport: e.target.value })} /></div>
+              <div><Label>Sở thích</Label><Input value={form.hobby} onChange={(e) => setForm({ ...form, hobby: e.target.value })} placeholder="VD: Đọc sách, golf, cà phê..." /></div>
+              <div className="grid grid-cols-2 gap-2">
                 <div><Label>Hãng</Label><Input value={form.airline_pref} onChange={(e) => setForm({ ...form, airline_pref: e.target.value })} /></div>
                 <div><Label>Ghế</Label><Input value={form.seat} onChange={(e) => setForm({ ...form, seat: e.target.value })} /></div>
               </div>
